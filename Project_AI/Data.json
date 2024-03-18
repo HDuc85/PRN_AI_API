@@ -1,0 +1,15 @@
+{
+  "contents": [
+    {
+      "parts": [
+        { "text": "show me a name of food or drink, so that so me a kcal food .repose me style example {name:\"Cake\", kcal : 500 kcal}" },
+        {
+          "inline_data": {
+            "mime_type": "image/jpeg",
+            "data": "''"
+          }
+        }
+      ]
+    }
+  ]
+}
