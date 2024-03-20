@@ -1,23 +1,15 @@
 ﻿using Microsoft.Win32;
-using System.Net.Http.Headers;
-using System.Net.Http;
-using System.Text;
-using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
+using System;
 using System.IO;
+using System.Net.Http;
+using System.Net.Http.Headers;
+using System.Text;
+using System.Threading.Tasks;
+using System.Windows;
+using System.Windows.Media.Imaging;
 
 namespace Project_AI
 {
-    /// <summary>
-    /// Interaction logic for MainWindow.xaml
-    /// </summary>
     public partial class MainWindow : Window
     {
         public MainWindow()
@@ -25,7 +17,7 @@ namespace Project_AI
             InitializeComponent();
         }
 
-        private void Button_Click(object sender, RoutedEventArgs e)
+        private async void Button_Click(object sender, RoutedEventArgs e)
         {
             OpenFileDialog openFileDialog = new OpenFileDialog();
             openFileDialog.Filter = "Image files (*.jpg;*.jpeg;*.png) | *.jpg;*.jpeg;*.png";
@@ -34,60 +26,45 @@ namespace Project_AI
                 Picture.Source = new BitmapImage(new Uri(openFileDialog.FileName));
                 string imagePath = openFileDialog.FileName;
 
-                CallGeminiAPI(imagePath);
+                await CallGeminiAPI(imagePath);
             }
         }
 
-        private async void CallGeminiAPI(string imagePath)
+        private async Task CallGeminiAPI(string imagePath)
         {
-            // Replace with the actual prompt and endpoint URL (if different)
             string prompt = "show me a name of food or drink, so that so me a kcal food .repose me style example {name:\"Cake\", kcal : 500 kcal}";
-            string endpointUrl = "https://generativelanguage.googleapis.com/v1beta/models/gemini-pro:generateContent?key=AIzaSyD3J41xmlxjIMGUljYo8yUtKK_MC87i5u4"; // Replace with your project ID
+            string endpointUrl = "https://generativelanguage.googleapis.com/v1beta/models/gemini-pro-vision:generateContent?key=AIzaSyD3J41xmlxjIMGUljYo8yUtKK_MC87i5u4";
 
-            // Accessing Google AI Studio's API requires authentication (refer to official documentation)
-            // This example omits authentication for security reasons. Implement appropriate authentication mechanisms before using this code in production.
+            try
+            {
+                // Convert image to base64
+                byte[] imageBytes = File.ReadAllBytes(imagePath);
+                string imageBase64 = Convert.ToBase64String(imageBytes);
 
-            // Assuming you have authentication implemented, uncomment the following lines:
-            // string apiKey = "<YOUR_API_KEY>"; // Replace with your API key
-            // client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", apiKey);
+                using (HttpClient client = new HttpClient())
+                {
+                    client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
 
-             var client = new HttpClient();
-      client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
+                    //var content = new StringContent($"{{\"contents\":[{{\"parts\":[{{\"text\":\"{prompt}\"}},{{\"inline_data\":{{\"mime_type\":\"image/jpeg\",\"data\":\"{imageBase64}\"}}}}]}}]}}", Encoding.UTF8, "application/json");
+                    var content = new StringContent($"{{\"contents\":\r\n    [\r\n        {{\"parts\":\r\n        [\r\n            {{\"text\":\"show me a name of food or drink, so that so me a kcal food .repose me style example {{name:\\\"Cake\\\", kcal : 500 kcal}}\"}},\r\n            {{\"inline_data\": \r\n            {{\r\n                \r\n            \"mime_type\" : \"image/jpeg\",\r\n            \"data\": \"{imageBase64}\"\r\n             }}\r\n            \r\n            }}\r\n        ]\r\n        }}\r\n    ]\r\n}}");
+                    var response = await client.PostAsync(endpointUrl, content);
 
-      try
-      {
-        byte[] imageBytes;
-        using (var imageStream = File.OpenRead(imagePath))
-        {
-          imageBytes = new byte[imageStream.Length];
-          imageStream.Read(imageBytes, 0, (int)imageStream.Length);
+                    if (response.IsSuccessStatusCode)
+                    {
+                        string jsonString = await response.Content.ReadAsStringAsync();
+                        // Process the JSON response (implementation omitted for brevity)
+                    }
+                    else
+                    {
+                        string errorMessage = await response.Content.ReadAsStringAsync();
+                        MessageBox.Show($"Error calling Gemini API: {errorMessage}");
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Error calling Gemini API: {ex.Message}");
+            }
         }
-
-        string imageBase64 = Convert.ToBase64String(imageBytes);
-
-                // var content = new StringContent($"{{\r\n  \"contents\":[\r\n    {{\r\n      \"parts\":[\r\n        {{\"text\": \"{prompt}\"}},\r\n        {{\r\n          \"inline_data\": {{\r\n            \"mime_type\":\"image/jpeg\",\r\n            \"data\": \"{imageBase64}\"\r\n          }}\r\n        }}\r\n      ]\r\n    }}\r\n  ]\r\n}}", Encoding.UTF8, "application/json");
-                var content = new StringContent($"{{\"contents\":[{{\"parts\":[{{\"text\":\"Write a story about a magic backpack\"}}]}}]}}", Encoding.UTF8, "application/json");
-        var response = await client.PostAsync(endpointUrl, content);
-
-        if (response.IsSuccessStatusCode)
-        {
-          string jsonString = await response.Content.ReadAsStringAsync();
-          // Process the JSON response to extract food name and kcal (implementation omitted for brevity)
-
-          // Example: Parse the JSON response to get predicted food name and kcal (assuming the response format)
-        
-          
-        }
-        else
-        {
-          MessageBox.Show("Error calling Gemini API");
-        }
-      }
-      catch (Exception ex)
-      {
-        MessageBox.Show($"Error reading image: {ex.Message}");
-      }
-    }
-
     }
 }
