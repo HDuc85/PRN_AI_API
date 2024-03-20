@@ -12,10 +12,11 @@
             <ColumnDefinition />
         </Grid.ColumnDefinitions>
         <Button Content="Select Picture" Grid.Column="0" Click="Button_Click" Margin="32,30,32,342" />
-        <Image x:Name="Picture" Grid.Column="1" Margin="10" />
-        <StackPanel Orientation="Vertical" Margin="10" Grid.Column="1">
+        <Image x:Name="Picture" Grid.Column="1" Margin="26,115,10,10" />
+        <StackPanel Orientation="Vertical" Margin="10,10,10,10" Grid.Column="1">
             <Label x:Name="NameLabel" Content="Name: " />
             <Label x:Name="KcalLabel" Content="Kcal: " />
+            <Label x:Name="DescribeLabel" Content="Describe: " />
         </StackPanel>
     </Grid>
 </Window>

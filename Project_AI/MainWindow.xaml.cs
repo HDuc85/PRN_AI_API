@@ -7,6 +7,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Media.Imaging;
+using System.Text.Json;
 
 namespace Project_AI
 {
@@ -32,7 +33,7 @@ namespace Project_AI
 
         private async Task CallGeminiAPI(string imagePath)
         {
-            string prompt = "show me a name of food or drink, so that so me a kcal food .repose me style example {name:\"Cake\", kcal : 500 kcal}";
+            string prompt = "show me a name of food or drink, so that so me a kcal food .repose me style example {name:\"Cake\", kcal : 500 ,describe:\"Cake with cherry\"}";
             string endpointUrl = "https://generativelanguage.googleapis.com/v1beta/models/gemini-pro-vision:generateContent?key=AIzaSyD3J41xmlxjIMGUljYo8yUtKK_MC87i5u4";
 
             try
@@ -46,13 +47,41 @@ namespace Project_AI
                     client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
 
                     //var content = new StringContent($"{{\"contents\":[{{\"parts\":[{{\"text\":\"{prompt}\"}},{{\"inline_data\":{{\"mime_type\":\"image/jpeg\",\"data\":\"{imageBase64}\"}}}}]}}]}}", Encoding.UTF8, "application/json");
-                    var content = new StringContent($"{{\"contents\":\r\n    [\r\n        {{\"parts\":\r\n        [\r\n            {{\"text\":\"show me a name of food or drink, so that so me a kcal food .repose me style example {{name:\\\"Cake\\\", kcal : 500 kcal}}\"}},\r\n            {{\"inline_data\": \r\n            {{\r\n                \r\n            \"mime_type\" : \"image/jpeg\",\r\n            \"data\": \"{imageBase64}\"\r\n             }}\r\n            \r\n            }}\r\n        ]\r\n        }}\r\n    ]\r\n}}");
+                    var content = new StringContent($"{{\"contents\":\r\n    [\r\n        {{\"parts\":\r\n        [\r\n            {{\"text\":\"show me a name of food or drink, so that so me a kcal food .repose me style example JSON {{\\\"name\\\":\\\"Cake\\\", \\\"kcal\\\" : 500,\\\"describe\\\":\\\"Cake with cherry\\\"}}\"}},\r\n            {{\"inline_data\": \r\n            {{\r\n                \r\n            \"mime_type\" : \"image/jpeg\",\r\n            \"data\": \"{imageBase64}\"\r\n             }}\r\n            \r\n            }}\r\n        ]\r\n        }}\r\n    ]\r\n}}");
                     var response = await client.PostAsync(endpointUrl, content);
 
                     if (response.IsSuccessStatusCode)
                     {
                         string jsonString = await response.Content.ReadAsStringAsync();
                         // Process the JSON response (implementation omitted for brevity)
+                        var data = JsonSerializer.Deserialize<GeminiResponse>(jsonString);
+                        if (data?.candidates?.Any() == true)
+                        {
+                            var firstCandidate = data.candidates[0];
+                            if (firstCandidate.content?.parts?.Any() == true)
+                            {
+                                string text = firstCandidate.content.parts[0].text.Trim(); // Remove extra characters
+                                text = text.Replace("'", "\"");
+                               // var document = JsonSerializer.Deserialize<Food>(text);
+                                Food foodItem = JsonSerializer.Deserialize<Food>(text);
+
+                                NameLabel.Content = "Food name: " + foodItem.name;
+                                KcalLabel.Content = "Kcal : " + foodItem.kcal + "KCal";
+                                DescribeLabel.Content = "Describe : " + foodItem.describe;
+
+
+
+
+                            }
+                            else
+                            {
+                                Console.WriteLine("Content or parts missing in the response");
+                            }
+                        }
+                        else
+                        {
+                            Console.WriteLine("Empty response or invalid structure");
+                        }
                     }
                     else
                     {
@@ -66,5 +95,40 @@ namespace Project_AI
                 MessageBox.Show($"Error calling Gemini API: {ex.Message}");
             }
         }
+    }
+    public class GeminiResponse
+    {
+        public List<Candidate> candidates { get; set; }
+        public PromptFeedback promptFeedback { get; set; }
+    }
+
+    public class Candidate
+    {
+        public Content content { get; set; }
+        public string finishReason { get; set; }
+        public int index { get; set; }
+        public List<SafetyRating> safetyRatings { get; set; }
+    }
+
+    public class Content
+    {
+        public List<Part> parts { get; set; }
+        public string role { get; set; }
+    }
+
+    public class Part
+    {
+        public string text { get; set; }
+    }
+    public class Food
+    {
+        public string name { get; set; }
+        public int kcal { get; set;}
+        public string describe {  get; set; }
+    }
+    public class SafetyRating
+    {
+        public string category { get; set; }
+        public string probability { get; set; }
     }
 }
