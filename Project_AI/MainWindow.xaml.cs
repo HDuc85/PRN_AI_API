@@ -179,6 +179,8 @@ namespace Project_AI
                                 {
                                     MessageBox.Show("Invalid food or drink");
                                 }
+                                // Set color for KcalLabel based on calorie level
+                                SetKcalLabelColor(foodItem.kcal);
                             }
                             else
                             {
@@ -200,6 +202,29 @@ namespace Project_AI
             catch (Exception ex)
             {
                 MessageBox.Show($"Error calling Gemini API: {ex.Message}");
+            }
+        }
+        private void SetKcalLabelColor(int kcal)
+        {
+            // Define threshold values for calorie levels
+            int highThreshold = 300; // Example value, adjust as needed
+            int mediumThreshold = 200; // Example value, adjust as needed
+
+            // Set color based on calorie level
+            if (kcal > highThreshold)
+            {
+                // High calorie (red)
+                KcalLabel.Foreground = System.Windows.Media.Brushes.Red;
+            }
+            else if (kcal > mediumThreshold)
+            {
+                // Medium calorie (orange)
+                KcalLabel.Foreground = System.Windows.Media.Brushes.Orange;
+            }
+            else
+            {
+                // Low calorie (green)
+                KcalLabel.Foreground = System.Windows.Media.Brushes.Green;
             }
         }
 
@@ -237,9 +262,8 @@ namespace Project_AI
                 await CallGeminiAPI(imagePath);
             }
         }
-
-
     }
+
 
     public class GeminiResponse
     {
