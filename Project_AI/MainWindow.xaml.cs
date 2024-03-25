@@ -89,13 +89,13 @@ namespace Project_AI
                             {
                                 string text = firstCandidate.content.parts[0].text.Trim(); // Remove extra characters
                                 text = text.Replace("'", "\"");
-                               // var document = JsonSerializer.Deserialize<Food>(text);
+                                // var document = JsonSerializer.Deserialize<Food>(text);
                                 Food foodItem = JsonSerializer.Deserialize<Food>(text);
                                 Picture.Source = new BitmapImage(new Uri(imagePath));
 
                                 NameLabel.Content = "Food name: " + foodItem.name;
                                 KcalLabel.Content = "Kcal : " + foodItem.kcal + "KCal";
-                                
+
                                 DescribeLabel.Content = "Describe : " + foodItem.describe;
 
                                 //Items.Add(new Item {Describe = "Describe : " + foodItem.describe,
@@ -156,8 +156,8 @@ namespace Project_AI
     public class Food
     {
         public string name { get; set; }
-        public int kcal { get; set;}
-        public string describe {  get; set; }
+        public int kcal { get; set; }
+        public string describe { get; set; }
     }
     public class SafetyRating
     {

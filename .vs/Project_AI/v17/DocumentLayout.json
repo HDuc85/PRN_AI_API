@@ -3,7 +3,11 @@
   "WorkspaceRootPath": "C:\\Users\\admin\\User\\Desktop\\ky7\\PRN221\\PRN_AI_API\\",
   "Documents": [
     {
-      "AbsoluteMoniker": "D:0:0:{37FB6BE7-5386-4A9A-9C94-DAFE78FF50F6}|Project_AI\\Project_AI.csproj|C:\\Users\\admin\\User\\Desktop\\ky7\\PRN221\\PRN_AI_API\\project_ai\\promptfeedback.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "AbsoluteMoniker": "D:0:0:{37FB6BE7-5386-4A9A-9C94-DAFE78FF50F6}|Project_AI\\Project_AI.csproj|c:\\users\\admin\\user\\desktop\\ky7\\prn221\\prn_ai_api\\project_ai\\mainwindow.xaml.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{37FB6BE7-5386-4A9A-9C94-DAFE78FF50F6}|Project_AI\\Project_AI.csproj|solutionrelative:project_ai\\mainwindow.xaml.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{37FB6BE7-5386-4A9A-9C94-DAFE78FF50F6}|Project_AI\\Project_AI.csproj|c:\\users\\admin\\user\\desktop\\ky7\\prn221\\prn_ai_api\\project_ai\\promptfeedback.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{37FB6BE7-5386-4A9A-9C94-DAFE78FF50F6}|Project_AI\\Project_AI.csproj|solutionrelative:project_ai\\promptfeedback.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     }
   ],
@@ -23,6 +27,19 @@
             {
               "$type": "Document",
               "DocumentIndex": 0,
+              "Title": "MainWindow.xaml.cs",
+              "DocumentMoniker": "C:\\Users\\admin\\User\\Desktop\\ky7\\PRN221\\PRN_AI_API\\Project_AI\\MainWindow.xaml.cs",
+              "RelativeDocumentMoniker": "Project_AI\\MainWindow.xaml.cs",
+              "ToolTip": "C:\\Users\\admin\\User\\Desktop\\ky7\\PRN221\\PRN_AI_API\\Project_AI\\MainWindow.xaml.cs",
+              "RelativeToolTip": "Project_AI\\MainWindow.xaml.cs",
+              "ViewState": "AQIAAAAAAAAAAAAAAAAAAKcAAAAAAAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2024-03-25T15:48:41.967Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 1,
               "Title": "PromptFeedback.cs",
               "DocumentMoniker": "C:\\Users\\admin\\User\\Desktop\\ky7\\PRN221\\PRN_AI_API\\Project_AI\\PromptFeedback.cs",
               "RelativeDocumentMoniker": "Project_AI\\PromptFeedback.cs",
