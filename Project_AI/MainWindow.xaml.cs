@@ -8,15 +8,41 @@ using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Media.Imaging;
 using System.Text.Json;
+using System.Collections.ObjectModel;
+using System.Windows.Controls;
+using System.Xml;
 
 namespace Project_AI
 {
     public partial class MainWindow : Window
     {
+        public class Item
+        {
+            public string Name { get; set; }
+            public string Kcal { get; set; }
+            public string Describe { get; set; }
+            public string ImagePath { get; set; }
+        }
+        //public ObservableCollection<Item> Items { get; set; }
         public MainWindow()
         {
             InitializeComponent();
+            //Items = new ObservableCollection<Item>();
+            //listView.DataContext = Items;
         }
+        //private void ListView_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        //{
+        //    if (listView.SelectedItem != null)
+        //    {
+        //        Item selectedItem = (Item)listView.SelectedItem;
+        //        NameLabel.Content = selectedItem.Name;
+        //        KcalLabel.Content = selectedItem.Kcal.ToString();
+        //        DescribeLabel.Content = selectedItem.Describe;
+        //        // Set image source
+        //        Uri uri = new Uri(selectedItem.ImagePath, UriKind.RelativeOrAbsolute);
+        //        Picture.Source = new System.Windows.Media.Imaging.BitmapImage(uri);
+        //    }
+        //}
 
         private async void Button_Click(object sender, RoutedEventArgs e)
         {
@@ -24,9 +50,10 @@ namespace Project_AI
             openFileDialog.Filter = "Image files (*.jpg;*.jpeg;*.png) | *.jpg;*.jpeg;*.png";
             if (openFileDialog.ShowDialog() == true)
             {
-                Picture.Source = new BitmapImage(new Uri(openFileDialog.FileName));
                 string imagePath = openFileDialog.FileName;
-
+                NameLabel.Content = "Loading...";
+                KcalLabel.Content = "Loading...";
+                DescribeLabel.Content = "Loading...";
                 await CallGeminiAPI(imagePath);
             }
         }
@@ -47,7 +74,7 @@ namespace Project_AI
                     client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
 
                     //var content = new StringContent($"{{\"contents\":[{{\"parts\":[{{\"text\":\"{prompt}\"}},{{\"inline_data\":{{\"mime_type\":\"image/jpeg\",\"data\":\"{imageBase64}\"}}}}]}}]}}", Encoding.UTF8, "application/json");
-                    var content = new StringContent($"{{\"contents\":\r\n    [\r\n        {{\"parts\":\r\n        [\r\n            {{\"text\":\"show me a name of food or drink, so that so me a kcal food .repose me style example JSON {{\\\"name\\\":\\\"Cake\\\", \\\"kcal\\\" : 500,\\\"describe\\\":\\\"Cake with cherry\\\"}}\"}},\r\n            {{\"inline_data\": \r\n            {{\r\n                \r\n            \"mime_type\" : \"image/jpeg\",\r\n            \"data\": \"{imageBase64}\"\r\n             }}\r\n            \r\n            }}\r\n        ]\r\n        }}\r\n    ]\r\n}}");
+                    var content = new StringContent($"{{\"contents\":\r\n    [\r\n        {{\"parts\":\r\n        [\r\n            {{\"text\":\"show me a name of food or drink, so that so me a kcal food .repose me style example {{\\\"name\\\":\\\"Cake\\\", \\\"kcal\\\" : 500,\\\"describe\\\":\\\"Cake with cherry\\\"}}\"}},\r\n            {{\"inline_data\": \r\n            {{\r\n                \r\n            \"mime_type\" : \"image/jpeg\",\r\n            \"data\": \"{imageBase64}\"\r\n             }}\r\n            \r\n            }}\r\n        ]\r\n        }}\r\n    ]\r\n}}");
                     var response = await client.PostAsync(endpointUrl, content);
 
                     if (response.IsSuccessStatusCode)
@@ -64,12 +91,18 @@ namespace Project_AI
                                 text = text.Replace("'", "\"");
                                // var document = JsonSerializer.Deserialize<Food>(text);
                                 Food foodItem = JsonSerializer.Deserialize<Food>(text);
+                                Picture.Source = new BitmapImage(new Uri(imagePath));
 
                                 NameLabel.Content = "Food name: " + foodItem.name;
                                 KcalLabel.Content = "Kcal : " + foodItem.kcal + "KCal";
+                                
                                 DescribeLabel.Content = "Describe : " + foodItem.describe;
 
-
+                                //Items.Add(new Item {Describe = "Describe : " + foodItem.describe,
+                                //                    ImagePath = imagePath,
+                                //                    Kcal = "Kcal : " + foodItem.kcal + "KCal",
+                                //                    Name = "Food name: " + foodItem.name
+                                //});
 
 
                             }

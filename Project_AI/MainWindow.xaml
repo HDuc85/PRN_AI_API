@@ -10,6 +10,7 @@
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="200"/>
             <ColumnDefinition />
+            
         </Grid.ColumnDefinitions>
         <Button Content="Select Picture" Grid.Column="0" Click="Button_Click" Margin="32,30,32,342" />
         <Image x:Name="Picture" Grid.Column="1" Margin="26,115,10,10" />
@@ -18,5 +19,21 @@
             <Label x:Name="KcalLabel" Content="Kcal: " />
             <Label x:Name="DescribeLabel" Content="Describe: " />
         </StackPanel>
+        <!--<ListView Name="listView" Margin="0,134,0,10" SelectionChanged="ListView_SelectionChanged">
+            <ListView.View>
+                <GridView>
+                    <GridViewColumn Header="Name" DisplayMemberBinding="{Binding Name}" Width="120"/>
+                    <GridViewColumn Header="Kcal" DisplayMemberBinding="{Binding Kcal}" Width="80"/>
+                    <GridViewColumn Header="Describe" DisplayMemberBinding="{Binding Describe}" Width="200"/>
+                    <GridViewColumn Header="Image" Width="120">
+                        <GridViewColumn.CellTemplate>
+                            <DataTemplate>
+                                <Image Width="100" Height="100" Source="{Binding ImagePath}"/>
+                            </DataTemplate>
+                        </GridViewColumn.CellTemplate>
+                    </GridViewColumn>
+                </GridView>
+            </ListView.View>
+        </ListView>-->
     </Grid>
 </Window>
