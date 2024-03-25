@@ -11,6 +11,10 @@ using System.Text.Json;
 using System.Collections.ObjectModel;
 using System.Windows.Controls;
 using System.Xml;
+using AForge.Video;
+using AForge.Video.DirectShow;
+using System.ComponentModel;
+using System.Drawing;
 
 namespace Project_AI
 {
@@ -23,26 +27,94 @@ namespace Project_AI
             public string Describe { get; set; }
             public string ImagePath { get; set; }
         }
-        //public ObservableCollection<Item> Items { get; set; }
+        private FilterInfoCollection videoDevices; // Khai báo biến để lưu thông tin về các thiết bị video
+        private VideoCaptureDevice videoSource; // Khai báo biến để thực hiện việc capture video
+
         public MainWindow()
         {
             InitializeComponent();
-            //Items = new ObservableCollection<Item>();
-            //listView.DataContext = Items;
+            InitializeWebcam(); // Gọi hàm khởi tạo webcam khi khởi động ứng dụng
         }
-        //private void ListView_SelectionChanged(object sender, SelectionChangedEventArgs e)
-        //{
-        //    if (listView.SelectedItem != null)
-        //    {
-        //        Item selectedItem = (Item)listView.SelectedItem;
-        //        NameLabel.Content = selectedItem.Name;
-        //        KcalLabel.Content = selectedItem.Kcal.ToString();
-        //        DescribeLabel.Content = selectedItem.Describe;
-        //        // Set image source
-        //        Uri uri = new Uri(selectedItem.ImagePath, UriKind.RelativeOrAbsolute);
-        //        Picture.Source = new System.Windows.Media.Imaging.BitmapImage(uri);
-        //    }
-        //}
+
+        private void InitializeWebcam()
+        {
+            videoDevices = new FilterInfoCollection(FilterCategory.VideoInputDevice);
+            if (videoDevices.Count > 0)
+            {
+                videoSource = new VideoCaptureDevice(videoDevices[0].MonikerString);
+                videoSource.NewFrame += new NewFrameEventHandler(videoSource_NewFrame);
+                videoSource.Start();
+            }
+            else
+            {
+                MessageBox.Show("No webcam found.");
+            }
+        }
+
+        private void videoSource_NewFrame(object sender, NewFrameEventArgs eventArgs)
+        {
+            Bitmap bitmap = (Bitmap)eventArgs.Frame.Clone();
+            Dispatcher.BeginInvoke(new ThreadStart(delegate
+            {
+                WebcamImage.Source = ConvertBitmap(bitmap);
+            }));
+        }
+
+        private BitmapImage ConvertBitmap(Bitmap bitmap)
+        {
+            using (MemoryStream memory = new MemoryStream())
+            {
+                bitmap.Save(memory, System.Drawing.Imaging.ImageFormat.Bmp);
+                memory.Position = 0;
+                BitmapImage bitmapImage = new BitmapImage();
+                bitmapImage.BeginInit();
+                bitmapImage.StreamSource = memory;
+                bitmapImage.CacheOption = BitmapCacheOption.OnLoad;
+                bitmapImage.EndInit();
+                return bitmapImage;
+            }
+        }
+
+        // Xử lý sự kiện khi ứng dụng đóng
+        protected override void OnClosing(CancelEventArgs e)
+        {
+            if (videoSource != null && videoSource.IsRunning)
+            {
+                // Dừng stream từ webcam khi ứng dụng đóng
+                videoSource.SignalToStop();
+                videoSource.WaitForStop();
+            }
+            base.OnClosing(e);
+        }
+
+        private void CaptureButton_Click(object sender, RoutedEventArgs e)
+        {
+            if (videoSource != null && videoSource.IsRunning)
+            {
+                videoSource.SignalToStop();
+            }
+
+            // Tạo tên mới cho ảnh dựa trên thời gian hiện tại
+            string imageName = DateTime.Now.ToString("yyyyMMddHHmmss") + ".jpg";
+            string imagePath = Path.Combine(@"C:\Users\admin\User\Desktop\ky7\PRN221\PRN_AI_API\image", imageName);
+
+            // Lưu ảnh từ webcam vào đường dẫn đã tạo
+            BitmapSource bitmapSource = (BitmapSource)WebcamImage.Source;
+            using (var fileStream = new FileStream(imagePath, FileMode.Create))
+            {
+                BitmapEncoder encoder = new PngBitmapEncoder();
+                encoder.Frames.Add(BitmapFrame.Create(bitmapSource));
+                encoder.Save(fileStream);
+            }
+
+            // Hiển thị thông tin "Loading" tương tự như khi tải ảnh lên
+            NameLabel.Content = "Loading...";
+            KcalLabel.Content = "Loading...";
+            DescribeLabel.Content = "Loading...";
+
+            // Gọi hàm CallGeminiAPI với đường dẫn của ảnh đã chụp
+            CallGeminiAPI(imagePath);
+        }
 
         private async void Button_Click(object sender, RoutedEventArgs e)
         {
@@ -91,11 +163,10 @@ namespace Project_AI
                                 text = text.Replace("'", "\"");
                                 // var document = JsonSerializer.Deserialize<Food>(text);
                                 Food foodItem = JsonSerializer.Deserialize<Food>(text);
-                                Picture.Source = new BitmapImage(new Uri(imagePath));
+                                WebcamImage.Source = new BitmapImage(new Uri(imagePath));
 
                                 NameLabel.Content = "Food name: " + foodItem.name;
                                 KcalLabel.Content = "Kcal : " + foodItem.kcal + "KCal";
-
                                 DescribeLabel.Content = "Describe : " + foodItem.describe;
 
                                 //Items.Add(new Item {Describe = "Describe : " + foodItem.describe,
@@ -103,8 +174,11 @@ namespace Project_AI
                                 //                    Kcal = "Kcal : " + foodItem.kcal + "KCal",
                                 //                    Name = "Food name: " + foodItem.name
                                 //});
-
-
+                                // Check if it's a valid food or drink
+                                if (string.IsNullOrWhiteSpace(foodItem.name) || foodItem.kcal <= 0 || string.IsNullOrWhiteSpace(foodItem.describe))
+                                {
+                                    MessageBox.Show("Invalid food or drink");
+                                }
                             }
                             else
                             {
@@ -128,7 +202,45 @@ namespace Project_AI
                 MessageBox.Show($"Error calling Gemini API: {ex.Message}");
             }
         }
+
+        private void ReloadButton_Click(object sender, RoutedEventArgs e)
+        {
+            // Bắt đầu lại việc capture ảnh từ webcam
+            InitializeWebcam();
+
+            // Đặt lại thông tin "Loading"
+            NameLabel.Content = "Loading...";
+            KcalLabel.Content = "Loading...";
+            DescribeLabel.Content = "Loading...";
+        }
+
+        private async void ChooseImageButton_Click(object sender, RoutedEventArgs e)
+        {
+            OpenFileDialog openFileDialog = new OpenFileDialog();
+            openFileDialog.Filter = "Image files (*.jpg;*.jpeg;*.png) | *.jpg;*.jpeg;*.png";
+            if (openFileDialog.ShowDialog() == true)
+            {
+                string imagePath = openFileDialog.FileName;
+
+                // Load ảnh từ đường dẫn được chọn
+                BitmapImage bitmap = new BitmapImage(new Uri(imagePath));
+
+                // Gán ảnh cho đối tượng WebcamImage
+                WebcamImage.Source = bitmap;
+
+                // Hiển thị thông tin "Loading"
+                NameLabel.Content = "Loading...";
+                KcalLabel.Content = "Loading...";
+                DescribeLabel.Content = "Loading...";
+
+                // Gọi hàm CallGeminiAPI để xử lý ảnh đã chọn
+                await CallGeminiAPI(imagePath);
+            }
+        }
+
+
     }
+
     public class GeminiResponse
     {
         public List<Candidate> candidates { get; set; }

@@ -6,21 +6,31 @@
         xmlns:local="clr-namespace:Project_AI"
         mc:Ignorable="d"
         Title="MainWindow" Height="450" Width="800">
-    <Grid>
-        <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="200"/>
-            <ColumnDefinition Width="19*" />
-            <ColumnDefinition Width="31*"/>
+	<Grid>
+		<Grid.ColumnDefinitions>
+			<ColumnDefinition Width="200"/>
+			<ColumnDefinition Width="599*" />
+			<ColumnDefinition/>
 
-        </Grid.ColumnDefinitions>
-        <Button Content="Select Picture" Grid.Column="0" Click="Button_Click" Margin="32,30,32,342" />
-        <Image x:Name="Picture" Grid.Column="1" Margin="26,115,10,10" Grid.ColumnSpan="2" />
-        <StackPanel Orientation="Vertical" Margin="10,10,10,10" Grid.Column="1" Grid.ColumnSpan="2">
-            <Label x:Name="NameLabel" Content="Name: " />
-            <Label x:Name="KcalLabel" Content="Kcal: " />
-            <Label x:Name="DescribeLabel" Content="Describe: " />
-        </StackPanel>
-        <!--<ListView Name="listView" Margin="0,134,0,10" SelectionChanged="ListView_SelectionChanged">
+		</Grid.ColumnDefinitions>
+
+		<!--<Button Content="Select Picture" Grid.Column="0" Click="Button_Click" Margin="32,30,32,342" />-->
+		<!-- Nút Capture -->
+		<Button Content="Capture" Click="CaptureButton_Click" Margin="32,21,32,0" Grid.Column="0" Height="41" VerticalAlignment="Top"/>
+		<!--Load-->
+		<Button Content="Reload" Click="ReloadButton_Click" Margin="32,72,32,0" Grid.Column="0" Height="41" VerticalAlignment="Top"/>
+		<!--Choose-->
+		<Button Content="Choose Image" Click="ChooseImageButton_Click" Margin="32,124,32,0" Grid.Column="0" Height="41" VerticalAlignment="Top"/>
+
+		<!--<Image x:Name="Picture" Grid.Column="1" Margin="26,115,10,10" Grid.ColumnSpan="2" />-->
+		<Image x:Name="WebcamImage" Margin="22,0,17,42" Grid.Column="1" Height="257" VerticalAlignment="Bottom"/>
+
+		<StackPanel Orientation="Vertical" Margin="10,10,0,10" Grid.Column="1">
+			<Label x:Name="NameLabel" Content="Name: " />
+			<Label x:Name="KcalLabel" Content="Kcal: " />
+			<Label x:Name="DescribeLabel" Content="Describe: " />
+		</StackPanel>
+		<!--<ListView Name="listView" Margin="0,134,0,10" SelectionChanged="ListView_SelectionChanged">
             <ListView.View>
                 <GridView>
                     <GridViewColumn Header="Name" DisplayMemberBinding="{Binding Name}" Width="120"/>
@@ -36,5 +46,5 @@
                 </GridView>
             </ListView.View>
         </ListView>-->
-    </Grid>
+	</Grid>
 </Window>
