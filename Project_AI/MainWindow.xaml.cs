@@ -15,6 +15,7 @@ using AForge.Video;
 using AForge.Video.DirectShow;
 using System.ComponentModel;
 using System.Drawing;
+using System.Drawing.Imaging;
 
 namespace Project_AI
 {
@@ -29,7 +30,7 @@ namespace Project_AI
         }
         private FilterInfoCollection videoDevices; // Khai báo biến để lưu thông tin về các thiết bị video
         private VideoCaptureDevice videoSource; // Khai báo biến để thực hiện việc capture video
-
+        private BitmapImage currentFrame;
         public MainWindow()
         {
             InitializeComponent();
@@ -42,7 +43,7 @@ namespace Project_AI
             if (videoDevices.Count > 0)
             {
                 videoSource = new VideoCaptureDevice(videoDevices[0].MonikerString);
-                videoSource.NewFrame += new NewFrameEventHandler(videoSource_NewFrame);
+                videoSource.NewFrame += new NewFrameEventHandler(VideoCaptureDevice_NewFrame);
                 videoSource.Start();
             }
             else
@@ -51,30 +52,32 @@ namespace Project_AI
             }
         }
 
-        private void videoSource_NewFrame(object sender, NewFrameEventArgs eventArgs)
+        private void VideoCaptureDevice_NewFrame(object sender, NewFrameEventArgs eventArgs)
         {
             Bitmap bitmap = (Bitmap)eventArgs.Frame.Clone();
-            Dispatcher.BeginInvoke(new ThreadStart(delegate
-            {
-                WebcamImage.Source = ConvertBitmap(bitmap);
-            }));
-        }
+            currentFrame = ConvertToBitmapImage(bitmap);
 
-        private BitmapImage ConvertBitmap(Bitmap bitmap)
+            // Update the UI on the UI thread
+            Dispatcher.Invoke(() => WebcamImage.Source = currentFrame);
+
+        }
+        private BitmapImage ConvertToBitmapImage(Bitmap bitmap)
         {
-            using (MemoryStream memory = new MemoryStream())
+            using (MemoryStream memoryStream = new MemoryStream())
             {
-                bitmap.Save(memory, System.Drawing.Imaging.ImageFormat.Bmp);
-                memory.Position = 0;
+                bitmap.Save(memoryStream, ImageFormat.Bmp);
+                memoryStream.Position = 0;
+
                 BitmapImage bitmapImage = new BitmapImage();
                 bitmapImage.BeginInit();
-                bitmapImage.StreamSource = memory;
                 bitmapImage.CacheOption = BitmapCacheOption.OnLoad;
+                bitmapImage.StreamSource = memoryStream;
                 bitmapImage.EndInit();
+                bitmapImage.Freeze(); // Freeze the BitmapImage to avoid threading issues
+
                 return bitmapImage;
             }
         }
-
         // Xử lý sự kiện khi ứng dụng đóng
         protected override void OnClosing(CancelEventArgs e)
         {
@@ -87,33 +90,40 @@ namespace Project_AI
             base.OnClosing(e);
         }
 
-        private void CaptureButton_Click(object sender, RoutedEventArgs e)
+        private async void CaptureButton_Click(object sender, RoutedEventArgs e)
         {
-            if (videoSource != null && videoSource.IsRunning)
+
+            if (currentFrame != null)
             {
-                videoSource.SignalToStop();
+                if (videoSource != null && videoSource.IsRunning)
+                {
+                    videoSource.SignalToStop();
+                }
+                // Save the current frame to a file (you can customize the file name and format)
+                Microsoft.Win32.SaveFileDialog saveDialog = new Microsoft.Win32.SaveFileDialog();
+                saveDialog.Filter = "JPEG Image|*.jpg|PNG Image|*.png";
+                if (saveDialog.ShowDialog() == true)
+                {
+                    BitmapEncoder encoder = (saveDialog.FilterIndex == 1) ? new JpegBitmapEncoder() : new PngBitmapEncoder();
+                    encoder.Frames.Add(BitmapFrame.Create(currentFrame));
+
+                    using (FileStream fileStream = new FileStream(saveDialog.FileName, FileMode.Create))
+                    {
+                        encoder.Save(fileStream);
+                    }
+                }
+
+
+                // Hiển thị thông tin "Loading" tương tự như khi tải ảnh lên
+                NameLabel.Content = "Loading...";
+                KcalLabel.Content = "Loading...";
+                DescribeLabel.Content = "Loading...";
+
+  
+                // Gọi hàm CallGeminiAPI với đường dẫn của ảnh đã chụp
+                await CallGeminiAPI(saveDialog.FileName);
+                
             }
-
-            // Tạo tên mới cho ảnh dựa trên thời gian hiện tại
-            string imageName = DateTime.Now.ToString("yyyyMMddHHmmss") + ".jpg";
-            string imagePath = Path.Combine(@"C:\Users\admin\User\Desktop\ky7\PRN221\PRN_AI_API\image", imageName);
-
-            // Lưu ảnh từ webcam vào đường dẫn đã tạo
-            BitmapSource bitmapSource = (BitmapSource)WebcamImage.Source;
-            using (var fileStream = new FileStream(imagePath, FileMode.Create))
-            {
-                BitmapEncoder encoder = new PngBitmapEncoder();
-                encoder.Frames.Add(BitmapFrame.Create(bitmapSource));
-                encoder.Save(fileStream);
-            }
-
-            // Hiển thị thông tin "Loading" tương tự như khi tải ảnh lên
-            NameLabel.Content = "Loading...";
-            KcalLabel.Content = "Loading...";
-            DescribeLabel.Content = "Loading...";
-
-            // Gọi hàm CallGeminiAPI với đường dẫn của ảnh đã chụp
-            CallGeminiAPI(imagePath);
         }
 
         private async void Button_Click(object sender, RoutedEventArgs e)

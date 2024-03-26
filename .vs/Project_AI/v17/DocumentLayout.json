@@ -1,17 +1,17 @@
 {
   "Version": 1,
-  "WorkspaceRootPath": "C:\\Users\\admin\\User\\Desktop\\ky7\\PRN221\\PRN_AI_API\\",
+  "WorkspaceRootPath": "C:\\Users\\ASUS\\Desktop\\ky7\\PRN_AI_API\\",
   "Documents": [
     {
-      "AbsoluteMoniker": "D:0:0:{37FB6BE7-5386-4A9A-9C94-DAFE78FF50F6}|Project_AI\\Project_AI.csproj|c:\\users\\admin\\user\\desktop\\ky7\\prn221\\prn_ai_api\\project_ai\\mainwindow.xaml.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "AbsoluteMoniker": "D:0:0:{37FB6BE7-5386-4A9A-9C94-DAFE78FF50F6}|Project_AI\\Project_AI.csproj|c:\\users\\asus\\desktop\\ky7\\prn_ai_api\\project_ai\\mainwindow.xaml.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{37FB6BE7-5386-4A9A-9C94-DAFE78FF50F6}|Project_AI\\Project_AI.csproj|solutionrelative:project_ai\\mainwindow.xaml.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{37FB6BE7-5386-4A9A-9C94-DAFE78FF50F6}|Project_AI\\Project_AI.csproj|C:\\Users\\admin\\User\\Desktop\\ky7\\PRN221\\PRN_AI_API\\project_ai\\mainwindow.xaml||{F11ACC28-31D1-4C80-A34B-F4E09D3D753C}",
+      "AbsoluteMoniker": "D:0:0:{37FB6BE7-5386-4A9A-9C94-DAFE78FF50F6}|Project_AI\\Project_AI.csproj|C:\\Users\\ASUS\\Desktop\\ky7\\PRN_AI_API\\project_ai\\mainwindow.xaml||{F11ACC28-31D1-4C80-A34B-F4E09D3D753C}",
       "RelativeMoniker": "D:0:0:{37FB6BE7-5386-4A9A-9C94-DAFE78FF50F6}|Project_AI\\Project_AI.csproj|solutionrelative:project_ai\\mainwindow.xaml||{F11ACC28-31D1-4C80-A34B-F4E09D3D753C}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{37FB6BE7-5386-4A9A-9C94-DAFE78FF50F6}|Project_AI\\Project_AI.csproj|C:\\Users\\admin\\User\\Desktop\\ky7\\PRN221\\PRN_AI_API\\project_ai\\promptfeedback.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "AbsoluteMoniker": "D:0:0:{37FB6BE7-5386-4A9A-9C94-DAFE78FF50F6}|Project_AI\\Project_AI.csproj|C:\\Users\\ASUS\\Desktop\\ky7\\PRN_AI_API\\project_ai\\promptfeedback.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{37FB6BE7-5386-4A9A-9C94-DAFE78FF50F6}|Project_AI\\Project_AI.csproj|solutionrelative:project_ai\\promptfeedback.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     }
   ],
@@ -22,19 +22,15 @@
       "DocumentGroups": [
         {
           "DockedWidth": 200,
-          "SelectedChildIndex": 2,
+          "SelectedChildIndex": 1,
           "Children": [
-            {
-              "$type": "Bookmark",
-              "Name": "ST:128:0:{116d2292-e37d-41cd-a077-ebacac4c8cc4}"
-            },
             {
               "$type": "Document",
               "DocumentIndex": 1,
               "Title": "MainWindow.xaml",
-              "DocumentMoniker": "C:\\Users\\admin\\User\\Desktop\\ky7\\PRN221\\PRN_AI_API\\Project_AI\\MainWindow.xaml",
+              "DocumentMoniker": "C:\\Users\\ASUS\\Desktop\\ky7\\PRN_AI_API\\Project_AI\\MainWindow.xaml",
               "RelativeDocumentMoniker": "Project_AI\\MainWindow.xaml",
-              "ToolTip": "C:\\Users\\admin\\User\\Desktop\\ky7\\PRN221\\PRN_AI_API\\Project_AI\\MainWindow.xaml",
+              "ToolTip": "C:\\Users\\ASUS\\Desktop\\ky7\\PRN_AI_API\\Project_AI\\MainWindow.xaml",
               "RelativeToolTip": "Project_AI\\MainWindow.xaml",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.003549|",
               "WhenOpened": "2024-03-25T16:22:30.213Z",
@@ -44,11 +40,11 @@
               "$type": "Document",
               "DocumentIndex": 0,
               "Title": "MainWindow.xaml.cs",
-              "DocumentMoniker": "C:\\Users\\admin\\User\\Desktop\\ky7\\PRN221\\PRN_AI_API\\Project_AI\\MainWindow.xaml.cs",
+              "DocumentMoniker": "C:\\Users\\ASUS\\Desktop\\ky7\\PRN_AI_API\\Project_AI\\MainWindow.xaml.cs",
               "RelativeDocumentMoniker": "Project_AI\\MainWindow.xaml.cs",
-              "ToolTip": "C:\\Users\\admin\\User\\Desktop\\ky7\\PRN221\\PRN_AI_API\\Project_AI\\MainWindow.xaml.cs",
+              "ToolTip": "C:\\Users\\ASUS\\Desktop\\ky7\\PRN_AI_API\\Project_AI\\MainWindow.xaml.cs",
               "RelativeToolTip": "Project_AI\\MainWindow.xaml.cs",
-              "ViewState": "AQIAALEAAAAAAAAAAAAowLYAAABBAAAA",
+              "ViewState": "AQIAACEAAAAAAAAAAAAowFEAAAA8AAAA",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
               "WhenOpened": "2024-03-25T15:48:41.967Z",
               "EditorCaption": ""
@@ -57,13 +53,14 @@
               "$type": "Document",
               "DocumentIndex": 2,
               "Title": "PromptFeedback.cs",
-              "DocumentMoniker": "C:\\Users\\admin\\User\\Desktop\\ky7\\PRN221\\PRN_AI_API\\Project_AI\\PromptFeedback.cs",
+              "DocumentMoniker": "C:\\Users\\ASUS\\Desktop\\ky7\\PRN_AI_API\\Project_AI\\PromptFeedback.cs",
               "RelativeDocumentMoniker": "Project_AI\\PromptFeedback.cs",
-              "ToolTip": "C:\\Users\\admin\\User\\Desktop\\ky7\\PRN221\\PRN_AI_API\\Project_AI\\PromptFeedback.cs",
+              "ToolTip": "C:\\Users\\ASUS\\Desktop\\ky7\\PRN_AI_API\\Project_AI\\PromptFeedback.cs",
               "RelativeToolTip": "Project_AI\\PromptFeedback.cs",
               "ViewState": "AQIAAAAAAAAAAAAAAAAAAAUAAAABAAAA",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2024-03-25T14:06:22.718Z"
+              "WhenOpened": "2024-03-25T14:06:22.718Z",
+              "EditorCaption": ""
             }
           ]
         }
